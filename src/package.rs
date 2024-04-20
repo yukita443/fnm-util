@@ -40,13 +40,7 @@ pub fn packages_of(version: &str) -> Result<Vec<String>, AppError> {
     use_node(&current)?;
 
     Ok(list
-        .map(|s| {
-            Path::new(s)
-                .file_name()
-                .unwrap()
-                .to_os_string()
-                .into_string()
-                .unwrap()
-        })
+        .filter_map(|s| Path::new(s).file_name())
+        .filter_map(|s| s.to_os_string().into_string().ok())
         .collect())
 }
