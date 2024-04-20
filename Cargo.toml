@@ -1,0 +1,14 @@
+[package]
+name = "fnm-util"
+version = "0.1.0"
+edition = "2021"
+authors = ["kaha440"]
+description = "A tool for updating Node.js using fnm"
+repository = "https://github.com/kaha440/fnm-util"
+license = "MIT"
+
+[dependencies]
+clap = { version = "4.5.4", features = ["derive"] }
+colored = "2.1.0"
+duct = "0.13.7"
+thiserror = "1.0.58"
