@@ -1,24 +1,24 @@
 use crate::package::{install_packages, packages_of};
-use crate::version::{format_node_version, install_node, is_available, is_installed};
+use crate::version::{format_node_version, install_node, local_node_exists, remote_node_exists};
 use crate::AppError;
 use colored::Colorize;
 use duct::cmd;
 use std::io::{self, Write};
 
 pub fn install(version: &str, packages_version: &str) -> Result<(), AppError> {
-    if is_installed(version, false)? {
+    if local_node_exists(version, false)? {
         return Err(AppError::AlreadyInstalled {
             version: version.to_string(),
         });
     }
 
-    if !is_available(version)? {
+    if !remote_node_exists(version)? {
         return Err(AppError::CannotFindRemoteVersion {
             version: version.to_string(),
         });
     }
 
-    if is_installed(packages_version, true)? {
+    if local_node_exists(packages_version, true)? {
         let packages = packages_of(packages_version)?;
         let packages: Vec<&str> = packages.iter().map(String::as_str).collect();
 
@@ -50,7 +50,7 @@ pub fn update(packages_version: Option<&str>) -> Result<(), AppError> {
     let output = cmd!("fnm", "list-remote").read()?;
     let latest = output.lines().last().unwrap();
 
-    if is_installed(latest, false)? {
+    if local_node_exists(latest, false)? {
         println!("Node is up-to-date.");
         return Ok(());
     }
@@ -71,7 +71,7 @@ pub fn update(packages_version: Option<&str>) -> Result<(), AppError> {
     println!();
 
     match packages_version {
-        Some(packages_version) if is_installed(packages_version, true)? => {
+        Some(packages_version) if local_node_exists(packages_version, true)? => {
             let packages = packages_of(packages_version)?;
             let packages: Vec<&str> = packages.iter().map(String::as_str).collect();
 

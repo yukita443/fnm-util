@@ -21,7 +21,7 @@ pub fn use_node(version: &str) -> Result<(), AppError> {
     Ok(())
 }
 
-pub fn is_installed(version: &str, alias: bool) -> Result<bool, AppError> {
+pub fn local_node_exists(version: &str, alias: bool) -> Result<bool, AppError> {
     let output = cmd!("fnm", "list").read()?;
     let mut list = output.lines();
 
@@ -32,7 +32,7 @@ pub fn is_installed(version: &str, alias: bool) -> Result<bool, AppError> {
     }
 }
 
-pub fn is_available(version: &str) -> Result<bool, AppError> {
+pub fn remote_node_exists(version: &str) -> Result<bool, AppError> {
     let output = cmd!("fnm", "list-remote").read()?;
     let mut list_remote = output.lines();
 
