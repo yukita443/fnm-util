@@ -28,7 +28,7 @@ pub fn local_node_exists(version: &str, alias: bool) -> Result<bool, AppError> {
     if alias {
         Ok(list.any(|line| line.split_whitespace().skip(1).any(|s| s == version)))
     } else {
-        Ok(list.any(|line| line.split_whitespace().nth(1).unwrap() == version))
+        Ok(list.any(|line| line.split_whitespace().nth(1).is_some_and(|s| s == version)))
     }
 }
 
@@ -36,7 +36,7 @@ pub fn remote_node_exists(version: &str) -> Result<bool, AppError> {
     let output = cmd!("fnm", "list-remote").read()?;
     let mut list_remote = output.lines();
 
-    Ok(list_remote.any(|s| s.split_whitespace().nth(0).unwrap() == version))
+    Ok(list_remote.any(|s| s.split_whitespace().nth(0).is_some_and(|s| s == version)))
 }
 
 pub fn format_node_version(version: &str) -> Result<String, AppError> {
