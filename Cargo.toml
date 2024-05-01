@@ -11,4 +11,4 @@ license = "MIT"
 clap = { version = "4.5.4", features = ["derive"] }
 colored = "2.1.0"
 duct = "0.13.7"
-thiserror = "1.0.58"
+thiserror = "1.0.59"
