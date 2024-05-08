@@ -1,6 +1,6 @@
 [package]
 name = "fnm-util"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["yukita443"]
 description = "A tool for updating Node.js using fnm"
