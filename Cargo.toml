@@ -2,9 +2,9 @@
 name = "fnm-util"
 version = "0.1.1"
 edition = "2021"
-authors = ["kaha440"]
+authors = ["yukita443"]
 description = "A tool for updating Node.js using fnm"
-repository = "https://github.com/kaha440/fnm-util"
+repository = "https://github.com/yukita443/fnm-util"
 license = "MIT"
 
 [dependencies]
