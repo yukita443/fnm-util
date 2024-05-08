@@ -44,6 +44,8 @@ enum SubCommand {
 }
 
 fn main() -> ExitCode {
+    env_logger::init();
+
     let result = match App::parse().subcommand {
         SubCommand::Install {
             version,

@@ -60,9 +60,7 @@ pub fn update(packages_version: Option<&str>) -> Result<(), AppError> {
     io::stdout().flush().unwrap();
 
     let mut input = String::new();
-    io::stdin()
-        .read_line(&mut input)
-        .expect("Can't read user input");
+    io::stdin().read_line(&mut input).unwrap();
 
     if input.trim().to_lowercase() != "y" {
         return Ok(());

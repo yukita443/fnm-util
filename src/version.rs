@@ -1,6 +1,7 @@
 use crate::AppError;
 use colored::Colorize;
 use duct::cmd;
+use log::debug;
 
 pub fn install_node(version: &str, set_as_default: bool) -> Result<(), AppError> {
     println!("Installing Node {}", version.cyan());
@@ -17,6 +18,7 @@ pub fn install_node(version: &str, set_as_default: bool) -> Result<(), AppError>
 }
 
 pub fn use_node(version: &str) -> Result<(), AppError> {
+    debug!("Using Node {version}");
     cmd!("fnm", "use", version).read()?;
     Ok(())
 }
@@ -36,7 +38,7 @@ pub fn remote_node_exists(version: &str) -> Result<bool, AppError> {
     let output = cmd!("fnm", "list-remote").read()?;
     let mut list_remote = output.lines();
 
-    Ok(list_remote.any(|s| s.split_whitespace().nth(0).is_some_and(|s| s == version)))
+    Ok(list_remote.any(|line| line.split_whitespace().nth(0).is_some_and(|s| s == version)))
 }
 
 pub fn format_node_version(version: &str) -> Result<String, AppError> {

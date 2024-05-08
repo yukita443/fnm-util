@@ -3,6 +3,7 @@ use crate::{
     AppError,
 };
 use duct::cmd;
+use log::debug;
 use std::{path::Path, process::Command};
 
 pub fn install_packages(
@@ -11,6 +12,7 @@ pub fn install_packages(
     packages: &[&str],
 ) -> Result<(), AppError> {
     let current = cmd!("fnm", "current").read()?;
+    debug!("Current Node version: {current}");
 
     use_node(version)?;
 
@@ -31,6 +33,7 @@ pub fn install_packages(
 
 pub fn packages_of(version: &str) -> Result<Vec<String>, AppError> {
     let current = cmd!("fnm", "current").read()?;
+    debug!("Current Node version: {current}");
 
     use_node(version)?;
 
