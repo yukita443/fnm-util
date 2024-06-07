@@ -8,6 +8,7 @@ repository = "https://github.com/yukita443/fnm-util"
 license = "MIT"
 
 [dependencies]
+anyhow = "1.0.86"
 clap = { version = "4.5.4", features = ["derive"] }
 colored = "2.1.0"
 duct = "0.13.7"
