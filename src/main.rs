@@ -57,7 +57,7 @@ fn main() -> ExitCode {
     match result {
         Ok(()) => ExitCode::SUCCESS,
         Err(error) => {
-            eprintln!("{}", error.to_string().red());
+            eprintln!("{}", format!("{error:#}").red());
             ExitCode::FAILURE
         }
     }
