@@ -1,7 +1,7 @@
 use crate::package::{install_packages, packages_of};
 use crate::version::{format_node_version, install_node, local_node_exists, remote_node_exists};
 use crate::AppError;
-use anyhow::bail;
+use anyhow::{bail, Context};
 use colored::Colorize;
 use duct::cmd;
 use std::io::{self, Write};
@@ -48,7 +48,9 @@ pub fn install(version: &str, packages_version: &str) -> anyhow::Result<()> {
 }
 
 pub fn update(packages_version: Option<&str>) -> anyhow::Result<()> {
-    let output = cmd!("fnm", "list-remote").read()?;
+    let output = cmd!("fnm", "list-remote")
+        .read()
+        .context("Failed to run `fnm list-remote`")?;
     let latest = output.lines().last().unwrap();
 
     if local_node_exists(latest, false)? {
