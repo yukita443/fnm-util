@@ -4,7 +4,7 @@ mod version;
 
 use clap::{Parser, Subcommand};
 use colored::Colorize;
-use std::{io, process::ExitCode};
+use std::process::ExitCode;
 use thiserror::Error;
 
 #[derive(Debug, Parser)]
@@ -76,10 +76,4 @@ enum AppError {
 
     #[error("Can't reinstall global packages from {version}")]
     CannotReinstallPackages { version: String },
-
-    #[error("IO Error: {source}")]
-    IO {
-        #[from]
-        source: io::Error,
-    },
 }

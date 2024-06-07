@@ -1,9 +1,8 @@
-use crate::AppError;
 use colored::Colorize;
 use duct::cmd;
 use log::debug;
 
-pub fn install_node(version: &str, set_as_default: bool) -> Result<(), AppError> {
+pub fn install_node(version: &str, set_as_default: bool) -> anyhow::Result<()> {
     println!("Installing Node {}", version.cyan());
 
     cmd!("fnm", "install", version).read()?;
@@ -17,13 +16,13 @@ pub fn install_node(version: &str, set_as_default: bool) -> Result<(), AppError>
     Ok(())
 }
 
-pub fn use_node(version: &str) -> Result<(), AppError> {
+pub fn use_node(version: &str) -> anyhow::Result<()> {
     debug!("Using Node {version}");
     cmd!("fnm", "use", version).read()?;
     Ok(())
 }
 
-pub fn local_node_exists(version: &str, alias: bool) -> Result<bool, AppError> {
+pub fn local_node_exists(version: &str, alias: bool) -> anyhow::Result<bool> {
     let output = cmd!("fnm", "list").read()?;
     let mut list = output.lines();
 
@@ -34,14 +33,14 @@ pub fn local_node_exists(version: &str, alias: bool) -> Result<bool, AppError> {
     }
 }
 
-pub fn remote_node_exists(version: &str) -> Result<bool, AppError> {
+pub fn remote_node_exists(version: &str) -> anyhow::Result<bool> {
     let output = cmd!("fnm", "list-remote").read()?;
     let mut list_remote = output.lines();
 
     Ok(list_remote.any(|line| line.split_whitespace().nth(0).is_some_and(|s| s == version)))
 }
 
-pub fn format_node_version(version: &str) -> Result<String, AppError> {
+pub fn format_node_version(version: &str) -> anyhow::Result<String> {
     let output = cmd!("fnm", "list").read()?;
     let mut list = output.lines();
 

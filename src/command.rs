@@ -1,19 +1,20 @@
 use crate::package::{install_packages, packages_of};
 use crate::version::{format_node_version, install_node, local_node_exists, remote_node_exists};
 use crate::AppError;
+use anyhow::bail;
 use colored::Colorize;
 use duct::cmd;
 use std::io::{self, Write};
 
-pub fn install(version: &str, packages_version: &str) -> Result<(), AppError> {
+pub fn install(version: &str, packages_version: &str) -> anyhow::Result<()> {
     if local_node_exists(version, false)? {
-        return Err(AppError::AlreadyInstalled {
+        bail!(AppError::AlreadyInstalled {
             version: version.to_string(),
         });
     }
 
     if !remote_node_exists(version)? {
-        return Err(AppError::CannotFindRemoteVersion {
+        bail!(AppError::CannotFindRemoteVersion {
             version: version.to_string(),
         });
     }
@@ -32,21 +33,21 @@ pub fn install(version: &str, packages_version: &str) -> Result<(), AppError> {
 
         println!();
 
-        return if packages_version == version {
-            Err(AppError::CannotReinstallPackages {
+        if packages_version == version {
+            bail!(AppError::CannotReinstallPackages {
                 version: format_node_version(packages_version)?,
-            })
+            });
         } else {
-            Err(AppError::CannotFindVersion {
+            bail!(AppError::CannotFindVersion {
                 version: packages_version.to_string(),
-            })
+            });
         };
     }
 
     Ok(())
 }
 
-pub fn update(packages_version: Option<&str>) -> Result<(), AppError> {
+pub fn update(packages_version: Option<&str>) -> anyhow::Result<()> {
     let output = cmd!("fnm", "list-remote").read()?;
     let latest = output.lines().last().unwrap();
 
@@ -84,14 +85,14 @@ pub fn update(packages_version: Option<&str>) -> Result<(), AppError> {
 
             println!();
 
-            return if packages_version == latest {
-                Err(AppError::CannotReinstallPackages {
+            if packages_version == latest {
+                bail!(AppError::CannotReinstallPackages {
                     version: format_node_version(packages_version)?,
-                })
+                });
             } else {
-                Err(AppError::CannotFindVersion {
+                bail!(AppError::CannotFindVersion {
                     version: packages_version.to_string(),
-                })
+                });
             };
         }
         None => install_node(latest, true)?,
