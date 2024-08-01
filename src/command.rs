@@ -21,27 +21,21 @@ pub fn install(version: &str, packages_version: &str) -> anyhow::Result<()> {
 
     if local_node_exists(packages_version, true)? {
         let packages = packages_of(packages_version)?;
-        let packages: Vec<&str> = packages.iter().map(String::as_str).collect();
+        let packages: Vec<_> = packages.iter().map(String::as_str).collect();
 
         install_node(version, false)?;
 
         println!();
 
         install_packages(version, packages_version, &packages)?;
+    } else if packages_version == version {
+        bail!(AppError::CannotReinstallPackages {
+            version: format_node_version(packages_version)?,
+        });
     } else {
-        install_node(version, false)?;
-
-        println!();
-
-        if packages_version == version {
-            bail!(AppError::CannotReinstallPackages {
-                version: format_node_version(packages_version)?,
-            });
-        } else {
-            bail!(AppError::CannotFindVersion {
-                version: packages_version.to_string(),
-            });
-        };
+        bail!(AppError::CannotFindVersion {
+            version: packages_version.to_string(),
+        });
     }
 
     Ok(())
@@ -74,7 +68,7 @@ pub fn update(packages_version: Option<&str>) -> anyhow::Result<()> {
     match packages_version {
         Some(packages_version) if local_node_exists(packages_version, true)? => {
             let packages = packages_of(packages_version)?;
-            let packages: Vec<&str> = packages.iter().map(String::as_str).collect();
+            let packages: Vec<_> = packages.iter().map(String::as_str).collect();
 
             install_node(latest, true)?;
 
@@ -82,20 +76,15 @@ pub fn update(packages_version: Option<&str>) -> anyhow::Result<()> {
 
             install_packages(latest, packages_version, &packages)?;
         }
+        Some(packages_version) if packages_version == latest => {
+            bail!(AppError::CannotReinstallPackages {
+                version: format_node_version(packages_version)?,
+            });
+        }
         Some(packages_version) => {
-            install_node(latest, true)?;
-
-            println!();
-
-            if packages_version == latest {
-                bail!(AppError::CannotReinstallPackages {
-                    version: format_node_version(packages_version)?,
-                });
-            } else {
-                bail!(AppError::CannotFindVersion {
-                    version: packages_version.to_string(),
-                });
-            };
+            bail!(AppError::CannotFindVersion {
+                version: packages_version.to_string(),
+            });
         }
         None => install_node(latest, true)?,
     }
