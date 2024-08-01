@@ -52,8 +52,11 @@ pub fn packages_of(version: &str) -> anyhow::Result<Vec<String>> {
 
     use_node(&current)?;
 
-    Ok(list
-        .filter_map(|s| Path::new(s).file_name())
-        .filter_map(|s| s.to_os_string().into_string().ok())
-        .collect())
+    list.map(|path| {
+        Path::new(path)
+            .file_name()
+            .and_then(|s| s.to_os_string().into_string().ok())
+    })
+    .collect::<Option<_>>()
+    .context("Failed to get list of installed packages")
 }
